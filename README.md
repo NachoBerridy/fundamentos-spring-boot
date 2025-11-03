@@ -14,7 +14,7 @@
 - **Nombre:** Ignacio Berridy
 - **Legajo:** 50714
 - **Institución:** Universidad Tecnológica Nacional (UTN)
-- **Materia:** Desarrollo de Aplicaciones con Spring Boot
+- **Materia:** Desarrollo de Software
 
 ---
 
