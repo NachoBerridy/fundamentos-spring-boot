@@ -423,33 +423,10 @@ Con estos fundamentos claros, los siguientes pasos naturales serían:
 
 ### 💬 Reflexión Final
 
-Spring Boot elimina gran parte de la configuración repetitiva del desarrollo Java tradicional, permitiendo enfocarse en la **lógica de negocio** en lugar de en configuraciones XML interminables. Su filosofía de "convention over configuration" y el amplio ecosistema Spring lo convierten en una herramienta **indispensable** para cualquier desarrollador Java moderno.
+Spring Boot elimina gran parte de la configuración repetitiva del desarrollo Java tradicional, permitiendo enfocarse en la **lógica de negocio** en lugar de en configuraciones XML. Su filosofía de "convention over configuration" y el amplio ecosistema Spring lo convierten en una herramienta **indispensable** para cualquier desarrollador Java moderno.
 
 Este proyecto me ha dado una **base sólida** para continuar explorando el ecosistema Spring y aplicar estos conceptos en proyectos más complejos.
 
----
-
-## 📞 Contacto
-
-**Ignacio Berridy**  
-Legajo: 50714  
-Universidad Tecnológica Nacional (UTN)
-
----
-
-## 📄 Licencia
-
-Este proyecto es de uso educativo para la UTN.
-
----
-
-## 🙏 Agradecimientos
-
-- A la **Universidad Tecnológica Nacional** por la formación académica
-- A la comunidad de **Spring Boot** por la excelente documentación
-- A **Pivotal/VMware** por el desarrollo y mantenimiento de Spring Framework
-
----
 
 <div align="center">
 
