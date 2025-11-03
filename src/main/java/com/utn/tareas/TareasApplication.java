@@ -6,8 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import com.utn.tareas.model.Prioridad;
-import com.utn.tareas.model.Tarea;
-import com.utn.tareas.repository.TareaRepository;
+import com.utn.tareas.service.TareaService;
 
 @SpringBootApplication
 public class TareasApplication {
@@ -17,44 +16,60 @@ public class TareasApplication {
 	}
 
 	/**
-	 * Bean para probar el repositorio al iniciar la aplicación
+	 * Bean para probar el servicio de tareas al iniciar la aplicación
 	 */
 	@Bean
-	public CommandLineRunner demo(TareaRepository repository) {
+	public CommandLineRunner demo(TareaService tareaService) {
 		return (args) -> {
-			System.out.println("\n========================================");
-			System.out.println("🚀 PRUEBA DEL REPOSITORIO DE TAREAS");
-			System.out.println("========================================\n");
+			System.out.println("\n╔════════════════════════════════════════╗");
+			System.out.println("║  🚀 PRUEBA DEL SERVICIO DE TAREAS  🚀  ║");
+			System.out.println("╚════════════════════════════════════════╝\n");
 			
-			// Mostrar todas las tareas iniciales
-			System.out.println("📋 Tareas iniciales (" + repository.contarTareas() + " tareas):");
-			repository.obtenerTodas().forEach(System.out::println);
+			// 1. Listar todas las tareas iniciales
+			System.out.println("1️⃣  LISTANDO TODAS LAS TAREAS:");
+			System.out.println("─────────────────────────────────────────");
+			tareaService.listarTodasLasTareas().forEach(System.out::println);
 			
-			// Guardar una nueva tarea
-			System.out.println("\n➕ Guardando nueva tarea...");
-			Tarea nuevaTarea = new Tarea("Aprender Spring Data JPA", false, Prioridad.ALTA);
-			repository.guardar(nuevaTarea);
-			System.out.println("✅ Tarea guardada: " + nuevaTarea);
+			// 2. Listar tareas pendientes
+			System.out.println("\n2️⃣  TAREAS PENDIENTES:");
+			System.out.println("─────────────────────────────────────────");
+			tareaService.listarTareasPendientes().forEach(System.out::println);
 			
-			// Buscar por ID
-			System.out.println("\n🔍 Buscando tarea con ID 3...");
-			repository.buscarPorId(3L).ifPresentOrElse(
-				tarea -> System.out.println("✅ Encontrada: " + tarea),
-				() -> System.out.println("❌ No encontrada")
+			// 3. Listar tareas completadas
+			System.out.println("\n3️⃣  TAREAS COMPLETADAS:");
+			System.out.println("─────────────────────────────────────────");
+			tareaService.listarTareasCompletadas().forEach(System.out::println);
+			
+			// 4. Agregar una nueva tarea
+			System.out.println("\n4️⃣  AGREGANDO NUEVA TAREA:");
+			System.out.println("─────────────────────────────────────────");
+			var nuevaTarea = tareaService.agregarTarea(
+				"Implementar API REST con Spring Boot", 
+				Prioridad.ALTA
 			);
+			System.out.println("✅ Tarea creada: " + nuevaTarea);
 			
-			// Eliminar una tarea
-			System.out.println("\n🗑️ Eliminando tarea con ID 2...");
-			boolean eliminada = repository.eliminarPorId(2L);
-			System.out.println(eliminada ? "✅ Tarea eliminada" : "❌ Tarea no encontrada");
+			// 5. Marcar tarea como completada
+			System.out.println("\n5️⃣  MARCANDO TAREA ID=1 COMO COMPLETADA:");
+			System.out.println("─────────────────────────────────────────");
+			boolean marcada = tareaService.marcarComoCompletada(1L);
+			System.out.println(marcada ? 
+				"✅ Tarea marcada como completada" : 
+				"❌ Tarea no encontrada");
 			
-			// Mostrar todas las tareas finales
-			System.out.println("\n📋 Tareas finales (" + repository.contarTareas() + " tareas):");
-			repository.obtenerTodas().forEach(System.out::println);
+			// 6. Mostrar estadísticas
+			System.out.println("\n6️⃣  ESTADÍSTICAS DEL SISTEMA:");
+			System.out.println("─────────────────────────────────────────");
+			System.out.println(tareaService.obtenerEstadisticas());
 			
-			System.out.println("\n========================================");
-			System.out.println("✅ PRUEBA COMPLETADA");
-			System.out.println("========================================\n");
+			// 7. Estado final de todas las tareas
+			System.out.println("\n7️⃣  ESTADO FINAL DE TODAS LAS TAREAS:");
+			System.out.println("─────────────────────────────────────────");
+			tareaService.listarTodasLasTareas().forEach(System.out::println);
+			
+			System.out.println("\n╔════════════════════════════════════════╗");
+			System.out.println("║     ✅ PRUEBA COMPLETADA CON ÉXITO     ║");
+			System.out.println("╚════════════════════════════════════════╝\n");
 		};
 	}
 }
