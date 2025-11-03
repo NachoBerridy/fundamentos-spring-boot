@@ -426,12 +426,3 @@ Con estos fundamentos claros, los siguientes pasos naturales serían:
 Spring Boot elimina gran parte de la configuración repetitiva del desarrollo Java tradicional, permitiendo enfocarse en la **lógica de negocio** en lugar de en configuraciones XML. Su filosofía de "convention over configuration" y el amplio ecosistema Spring lo convierten en una herramienta **indispensable** para cualquier desarrollador Java moderno.
 
 Este proyecto me ha dado una **base sólida** para continuar explorando el ecosistema Spring y aplicar estos conceptos en proyectos más complejos.
-
-
-<div align="center">
-
-**⭐ Si este proyecto te fue útil, no olvides darle una estrella ⭐**
-
-Desarrollado con ❤️ usando Spring Boot
-
-</div>
