@@ -3,6 +3,8 @@ package com.utn.tareas.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,8 @@ import com.utn.tareas.repository.TareaRepository;
  */
 @Service
 public class TareaService {
+    
+    private static final Logger logger = LoggerFactory.getLogger(TareaService.class);
     
     private final TareaRepository tareaRepository;
     
@@ -33,6 +37,7 @@ public class TareaService {
      */
     public TareaService(TareaRepository tareaRepository) {
         this.tareaRepository = tareaRepository;
+        logger.info("TareaService inicializado correctamente");
     }
     
     /**
@@ -45,15 +50,23 @@ public class TareaService {
      * @throws IllegalStateException Si se supera el límite máximo de tareas
      */
     public Tarea agregarTarea(String descripcion, Prioridad prioridad) {
+        logger.debug("Intentando agregar nueva tarea: {} con prioridad: {}", descripcion, prioridad);
+        
         // Validar que no se supere el límite máximo de tareas
-        if (tareaRepository.obtenerTodas().size() >= maxTareas) {
+        int tareasActuales = tareaRepository.obtenerTodas().size();
+        if (tareasActuales >= maxTareas) {
+            logger.error("Límite de tareas alcanzado: {}/{}", tareasActuales, maxTareas);
             throw new IllegalStateException(
                 String.format("❌ No se puede agregar la tarea. Límite máximo alcanzado: %d tareas", maxTareas)
             );
         }
         
         Tarea nuevaTarea = new Tarea(descripcion, false, prioridad);
-        return tareaRepository.guardar(nuevaTarea);
+        Tarea tareaGuardada = tareaRepository.guardar(nuevaTarea);
+        logger.info("Tarea agregada exitosamente con ID: {}", tareaGuardada.getId());
+        logger.debug("Detalles de la tarea: {}", tareaGuardada);
+        
+        return tareaGuardada;
     }
     
     /**
@@ -62,7 +75,10 @@ public class TareaService {
      * @return Lista con todas las tareas
      */
     public List<Tarea> listarTodasLasTareas() {
-        return tareaRepository.obtenerTodas();
+        logger.debug("Listando todas las tareas del sistema");
+        List<Tarea> tareas = tareaRepository.obtenerTodas();
+        logger.info("Total de tareas en el sistema: {}", tareas.size());
+        return tareas;
     }
     
     /**
@@ -94,13 +110,19 @@ public class TareaService {
      * @return true si se marcó correctamente, false si no se encontró la tarea
      */
     public boolean marcarComoCompletada(Long id) {
+        logger.debug("Intentando marcar tarea ID={} como completada", id);
+        
         return tareaRepository.buscarPorId(id)
                 .map(tarea -> {
                     tarea.setCompletada(true);
                     tareaRepository.guardar(tarea);
+                    logger.info("Tarea ID={} marcada como completada", id);
                     return true;
                 })
-                .orElse(false);
+                .orElseGet(() -> {
+                    logger.warn("No se encontró la tarea con ID={}", id);
+                    return false;
+                });
     }
     
     /**
