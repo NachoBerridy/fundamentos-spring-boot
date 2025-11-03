@@ -25,8 +25,13 @@ public class TareasApplication {
 			System.out.println("║  🚀 PRUEBA DEL SERVICIO DE TAREAS  🚀  ║");
 			System.out.println("╚════════════════════════════════════════╝\n");
 			
+			// 0. Mostrar configuración de la aplicación
+			System.out.println("0️⃣  CONFIGURACIÓN DE LA APLICACIÓN:");
+			System.out.println("─────────────────────────────────────────");
+			System.out.println(tareaService.obtenerConfiguracion());
+			
 			// 1. Listar todas las tareas iniciales
-			System.out.println("1️⃣  LISTANDO TODAS LAS TAREAS:");
+			System.out.println("\n1️⃣  LISTANDO TODAS LAS TAREAS:");
 			System.out.println("─────────────────────────────────────────");
 			tareaService.listarTodasLasTareas().forEach(System.out::println);
 			
@@ -57,13 +62,33 @@ public class TareasApplication {
 				"✅ Tarea marcada como completada" : 
 				"❌ Tarea no encontrada");
 			
-			// 6. Mostrar estadísticas
+			// 6. Mostrar estadísticas (solo si está configurado)
 			System.out.println("\n6️⃣  ESTADÍSTICAS DEL SISTEMA:");
 			System.out.println("─────────────────────────────────────────");
-			System.out.println(tareaService.obtenerEstadisticas());
+			if (tareaService.debeMostrarEstadisticas()) {
+				System.out.println(tareaService.obtenerEstadisticas());
+			} else {
+				System.out.println("⚠️ Las estadísticas están deshabilitadas en la configuración");
+			}
 			
-			// 7. Estado final de todas las tareas
-			System.out.println("\n7️⃣  ESTADO FINAL DE TODAS LAS TAREAS:");
+			// 7. Probar validación de límite máximo
+			System.out.println("\n7️⃣  PROBANDO VALIDACIÓN DE LÍMITE MÁXIMO:");
+			System.out.println("─────────────────────────────────────────");
+			System.out.println("📋 Tareas actuales: " + tareaService.listarTodasLasTareas().size() + 
+			                   " / " + tareaService.getMaxTareas() + " (máximo permitido)");
+			
+			// Intentar agregar tareas hasta alcanzar el límite
+			try {
+				for (int i = 1; i <= 10; i++) {
+					tareaService.agregarTarea("Tarea de prueba " + i, Prioridad.BAJA);
+					System.out.println("✅ Tarea " + i + " agregada correctamente");
+				}
+			} catch (IllegalStateException e) {
+				System.out.println(e.getMessage());
+			}
+			
+			// 8. Estado final de todas las tareas
+			System.out.println("\n8️⃣  ESTADO FINAL DE TODAS LAS TAREAS:");
 			System.out.println("─────────────────────────────────────────");
 			tareaService.listarTodasLasTareas().forEach(System.out::println);
 			

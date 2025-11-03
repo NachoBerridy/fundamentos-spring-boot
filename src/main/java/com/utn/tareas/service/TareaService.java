@@ -3,6 +3,7 @@ package com.utn.tareas.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.utn.tareas.model.Prioridad;
@@ -17,6 +18,15 @@ public class TareaService {
     
     private final TareaRepository tareaRepository;
     
+    @Value("${app.nombre}")
+    private String nombreApp;
+    
+    @Value("${app.max-tareas}")
+    private int maxTareas;
+    
+    @Value("${app.mostrar-estadisticas}")
+    private boolean mostrarEstadisticas;
+    
     /**
      * Constructor con inyección de dependencias
      * @param tareaRepository Repositorio de tareas
@@ -27,12 +37,21 @@ public class TareaService {
     
     /**
      * Agrega una nueva tarea al sistema
+     * Valida que no se supere el límite máximo de tareas configurado
      * 
      * @param descripcion Descripción de la tarea
      * @param prioridad Prioridad de la tarea
      * @return La tarea creada con su ID asignado
+     * @throws IllegalStateException Si se supera el límite máximo de tareas
      */
     public Tarea agregarTarea(String descripcion, Prioridad prioridad) {
+        // Validar que no se supere el límite máximo de tareas
+        if (tareaRepository.obtenerTodas().size() >= maxTareas) {
+            throw new IllegalStateException(
+                String.format("❌ No se puede agregar la tarea. Límite máximo alcanzado: %d tareas", maxTareas)
+            );
+        }
+        
         Tarea nuevaTarea = new Tarea(descripcion, false, prioridad);
         return tareaRepository.guardar(nuevaTarea);
     }
@@ -111,6 +130,52 @@ public class TareaService {
             pendientes,
             total > 0 ? (pendientes * 100.0 / total) : 0.0
         );
+    }
+    
+    /**
+     * Imprime la configuración de la aplicación
+     * 
+     * @return String formateado con las propiedades de configuración
+     */
+    public String obtenerConfiguracion() {
+        return String.format(
+            "⚙️  CONFIGURACIÓN DE LA APLICACIÓN\n" +
+            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+            "📱 Nombre:                  %s\n" +
+            "📊 Máximo de tareas:        %d\n" +
+            "📈 Mostrar estadísticas:    %s\n" +
+            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
+            nombreApp,
+            maxTareas,
+            mostrarEstadisticas ? "Sí" : "No"
+        );
+    }
+    
+    /**
+     * Verifica si se deben mostrar las estadísticas según configuración
+     * 
+     * @return true si se deben mostrar estadísticas, false en caso contrario
+     */
+    public boolean debeMostrarEstadisticas() {
+        return mostrarEstadisticas;
+    }
+    
+    /**
+     * Obtiene el nombre de la aplicación
+     * 
+     * @return Nombre de la aplicación configurado
+     */
+    public String getNombreApp() {
+        return nombreApp;
+    }
+    
+    /**
+     * Obtiene el límite máximo de tareas
+     * 
+     * @return Número máximo de tareas permitidas
+     */
+    public int getMaxTareas() {
+        return maxTareas;
     }
     
     /**
